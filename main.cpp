@@ -95,6 +95,22 @@ void creating_map(std::vector<std::string> &v, std::map<std::string, int> &m){
     }
 }
 
+std::map<std::string, int> merge_in_one_map(std::vector<std::map <std::string, int>> maps){
+    std::map<std::string, int> merged_map;
+
+    for(auto map:maps){
+        for (auto const& element : map) {
+            if(merged_map.count(element.first)){
+                merged_map[element.first]+=element.second;
+            }else{
+                merged_map[element.first] = element.second;
+            }
+
+        }
+    }
+}
+
+
 int main()
 {
     std::vector<std::map <std::string, int>> maps;
