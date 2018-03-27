@@ -118,16 +118,16 @@ int main()
     int start = 0;
     int end = st;
    // std::cout<<"START = "<<start << " END = " <<end <<" ALL SIZE= "<<words.size()<<std::endl;
-//    for(int i = 0; i < nthreads; ++i){
-//       // threads.emplace_back( std::thread( creating_map, words,maps.at(i), start, end, std::ref (m)) );
-//        if(i == nthreads-1)
-//            break;
-//        std::vector<std::string> part_of_words(words.begin()+start,words.begin()+start+end);
-//        threads.emplace_back( std::thread( creating_map, part_of_words ,std::ref(maps.at(i))));
-//        start = end+1;
-//        end += st;
-//    }
-    creating_map(words, maps.at(0));
+    for(int i = 0; i < nthreads; ++i){
+       // threads.emplace_back( std::thread( creating_map, words,maps.at(i), start, end, std::ref (m)) );
+        if(i == nthreads-1)
+            break;
+        std::vector<std::string> part_of_words(words.begin()+start,words.begin()+start+end);
+        threads.emplace_back( std::thread(creating_map, std::ref(part_of_words) ,std::ref(maps.at(i))));
+        start = end+1;
+        end += st;
+    }
+    //creating_map(words, maps.at(0));
 
     for(auto& thread : threads){
         thread.join ();
