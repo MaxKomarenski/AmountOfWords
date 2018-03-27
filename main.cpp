@@ -82,8 +82,9 @@ void sort_by_amount_and_write_into_file(std::vector<std::string> v, std::map<std
     outputFile2.close();
 }
 
-void creating_map(std::vector<std::string>& v, std::map<std::string, int> &m, int start, int end, std::mutex &mutex){
-    for (int i = start; i < end; ++i){
+void creating_map(std::vector<std::string> &v, std::map<std::string, int> &m){
+    std::cout<<v.size()<<"\n";
+    for (int i = 0; i < v.size(); ++i){
         //mutex.lock();
         if (m.count(v.at(i))){
             m[v.at(i)] += 1;
@@ -117,21 +118,31 @@ int main()
     int start = 0;
     int end = st;
    // std::cout<<"START = "<<start << " END = " <<end <<" ALL SIZE= "<<words.size()<<std::endl;
-    for(int i = 0; i < nthreads; ++i){
-       // threads.emplace_back( std::thread( creating_map, words,maps.at(i), start, end, std::ref (m)) );
-        if(i == nthreads-1)
-            end = words.size()-1;
-        std::cout<<"START = "<<start << " END = " <<end <<" ALL SIZE= "<<words.size()<<std::endl;
-        start = end+1;
-        end += st;
+//    for(int i = 0; i < nthreads; ++i){
+//       // threads.emplace_back( std::thread( creating_map, words,maps.at(i), start, end, std::ref (m)) );
+//        if(i == nthreads-1)
+//            break;
+//        std::vector<std::string> part_of_words(words.begin()+start,words.begin()+start+end);
+//        threads.emplace_back( std::thread( creating_map, part_of_words ,std::ref(maps.at(i))));
+//        start = end+1;
+//        end += st;
+//    }
+    creating_map(words, maps.at(0));
 
+    for(auto& thread : threads){
+        thread.join ();
+    }
+    for(std::map<std::string, int> m:maps){
 
+        for (auto const& x : m)
+        {
+            std::cout << x.first  // string (key)
+                      << ':'
+                      << x.second // string's value
+                      << std::endl ;
+        }
 
     }
-
-//    for(auto& thread : threads){
-//        thread.join ();
-//    }
 //
 //   // creating_map(words, words_map);
 //
