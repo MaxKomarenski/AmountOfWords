@@ -133,15 +133,24 @@ int main()
 
     int start = 0;
     int end = st;
-   // std::cout<<"START = "<<start << " END = " <<end <<" ALL SIZE= "<<words.size()<<std::endl;
+    std::vector<std::vector<std::string>> parts;
     for(int i = 0; i < nthreads; ++i){
-       // threads.emplace_back( std::thread( creating_map, words,maps.at(i), start, end, std::ref (m)) );
-        if(i == nthreads-1)
+        std::cout<<"Start = " << start<<" END = " << end<<std::endl;
+        if(i == nthreads-1){
+            std::cout<<"Start = " << start<<" END = " << end<<std::endl;
             break;
+        }
+
         std::vector<std::string> part_of_words(words.begin()+start,words.begin()+start+end);
-        threads.emplace_back( std::thread(creating_map, std::ref(part_of_words) ,std::ref(maps.at(i))));
+        parts.emplace_back(part_of_words);
         start = end+1;
         end += st;
+    }
+   // std::cout<<"START = "<<start << " END = " <<end <<" ALL SIZE= "<<words.size()<<std::endl;
+    for(int i = 0; i < nthreads; ++i){
+
+        threads.emplace_back( std::thread(creating_map, std::ref(parts.at(i)) ,std::ref(maps.at(i))));
+
     }
     //creating_map(words, maps.at(0));
 
