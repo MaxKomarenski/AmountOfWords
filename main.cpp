@@ -28,10 +28,10 @@ inline long long to_us(const D& d)
 
 
 std::vector <std::string> read_from_file(std::string filename);
-std::vector<std::string> split(std::vector<std::string> target, int start, int end);
-std::map<std::string, int> merge_in_one_map(std::vector<std::map <std::string, int>> maps);
+std::vector<std::string> split(const std::vector<std::string> &target, int start, int end);
+std::map<std::string, int> merge_in_one_map(const std::vector<std::map <std::string, int>> &maps);
 void configure(Configuration& conf);
-void creating_map(std::vector<std::string> &v, std::map<std::string, int> &m);
+void creating_map(const std::vector<std::string> &v, std::map<std::string, int> &m);
 void sort_by_letters_and_write_into_file(std::map<std::string, int> m, std::string filename);
 void sort_by_amount_and_write_into_file(std::map<std::string, int> m, std::string filename);
 void partition(std::vector<std::vector<std::string>>&parts, int threadAmmount, std::vector<std::string> target);
@@ -58,6 +58,10 @@ int main()
 
     auto stage1_start_time = get_current_time_fenced(); //time point
     std::vector <std::string> words = read_from_file(conf.getFileRead());
+
+    if(words.empty()){
+        std::cerr << "file doesn't contains any words";
+    }
 
     auto stage2_start_time = get_current_time_fenced(); // time point
 
@@ -180,7 +184,7 @@ void partition(std::vector<std::vector<std::string>>&parts, int threadAmmount, s
         }
     }
 }
-std::vector<std::string> split(std::vector<std::string> target, int start, int end){
+std::vector<std::string> split(const std::vector<std::string> &target, int start, int end){
     std::vector<std::string> splitted;
 
     for(int i = start; i<= end; i++){
@@ -188,20 +192,18 @@ std::vector<std::string> split(std::vector<std::string> target, int start, int e
     }
     return splitted;
 }
-void creating_map(std::vector<std::string> &v, std::map<std::string, int> &m){
+void creating_map(const std::vector<std::string> &v, std::map<std::string, int> &m){
 
     for (int i = 0; i < v.size(); ++i){
         //mutex.lock();
-        if (m.count(v.at(i))){
-            m[v.at(i)] += 1;
-        }else{
-            m[v.at(i)] = 1;
+        for (auto& w: v){
+            ++m[w];
         }
         //mutex.lock();
     }
 }
 
-std::map<std::string, int> merge_in_one_map(std::vector<std::map <std::string, int>> maps){
+std::map<std::string, int> merge_in_one_map(const std::vector<std::map <std::string, int>> &maps){
     std::map<std::string, int> merged_map;
 
     for(auto map:maps){
@@ -260,12 +262,5 @@ void configure(Configuration& conf){
         }
 
     }
-
-
-
-
-
-
-
 
 }
